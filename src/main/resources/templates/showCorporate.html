@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BankBlaze</title>
+</head>
+<body>
+<h1>Vállalati Szolgáltatások</h1>
+<div>
+  <table>
+    <tr>
+      <td>
+        <a th:href="@{/queue/queueNumber}" th:text="${corporates.get(0).name}"></a>
+      </td>
+      <td>
+        <a th:href="@{/queue/queueNumber}" th:text="${corporates.get(1).name}"></a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a th:href="@{/queue/queueNumber}" th:text="${corporates.get(2).name}"></a>
+      </td>
+      <td>
+        <a th:href="@{/queue/queueNumber}" th:text="${corporates.get(3).name}"></a>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

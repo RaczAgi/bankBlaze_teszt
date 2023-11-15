@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BankBlaze</title>
+    <link rel="stylesheet" type="text/css" href="retail.css">
+</head>
+<body>
+<h1 class="centered-heading">Lakossági Szolgáltatások</h1>
+<div class="centered-content">
+    <div class="button-container">
+        <form method="get" th:action="@{/queue/queueNumber}">
+            <button class="retail-button"  th:href="@{/queue/queueNumber}" th:text="${retails.get(0).name}"></button>
+            <button class="retail-button" th:href="@{/queue/queueNumber}" th:text="${retails.get(1).name}"></button>
+            <button class="retail-button" th:href="@{/queue/queueNumber}" th:text="${retails.get(2).name}"></button>
+            <button class="retail-button" th:href="@{/queue/queueNumber}" th:text="${retails.get(3).name}"></button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

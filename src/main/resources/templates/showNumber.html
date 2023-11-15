@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Show Number</title>
+</head>
+<body>
+<h1>Generált sorszám</h1>
+<div th:if="${generatedNumber != null}">
+    <h3>Üdvözöljük <span th:text="${customerName}"></span>, az ön Sorszáma: <span th:text="${generatedNumber}"></span></h3>
+</div>
+</body>
+</html>

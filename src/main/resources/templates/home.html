@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Üdvözöljük Bankunkban!</h1>
+<h2>Kérjük válasszon szolgáltatást</h2>
+<h3><a th:href="@{/login}">Admin sign in</a></h3>
+<table>
+    <tr>
+        <th>
+            <a th:href="@{/retail}">
+                <p>Lakossági Szolgáltatások</p>
+            </a>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <a th:href="@{/corporate}">
+                <p>Vállalati Szolgáltatások<p/>
+            </a>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <a th:href="@{/tellers}">
+                <p>Pénztár</p>
+            </a>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <a th:href="@{/premium}">
+                <p>Prémium</p>
+            </a>
+        </th>
+    </tr>
+</table>
+
+
+</body>
+</html>

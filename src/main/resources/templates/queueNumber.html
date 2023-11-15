@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BankBlaze Get a number</title>
+</head>
+<body>
+<h1 th:text="'Ön a ' + ${header} + ' Szolgáltatásokat választotta'"></h1>
+<h1>Kérjük adja meg a nevét!</h1>
+<form th:action="@{/queue/queueNumber}" method="post">
+    <label>
+        <input th:field="*{newQueueNumber.name}" placeholder="Ide írja be, hogy szólíhatjuk..." type="text" id="name">
+    </label>
+    <button type="submit">Tovább</button>
+</form>
+
+</body>
+</html>
