@@ -14,10 +14,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+
 public class JpaUserDetailsService implements UserDetailsService {
 
     private final EmployeeRepository employeeRepository;
+
+    public JpaUserDetailsService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -40,12 +40,12 @@ private UserDetailsService userDetailsService;
     }
 
 
-    @GetMapping("/admin")
+    @GetMapping("/login")
     public String showLogin(){
         return "login";
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/login")
     public String processLogin(Authentication authentication, @RequestParam String username, @RequestParam String password) {
         if (authentication != null && authentication.isAuthenticated()) {
             // Felhasználó már be van jelentkezve

@@ -50,7 +50,7 @@ public class SecurityConfig {
 
     @Bean
     //authentication
-    public UserDetailsService userDetailsService(PasswordEncoder encoder){
+    public UserDetailsService userDetailsService(PasswordEncoder encoder, EmployeeRepository employeeRepository){
     //    UserDetails admin= User.withUsername("")
     //            .password(encoder.encode(""))
     //            .roles("ADMIN")
@@ -60,7 +60,7 @@ public class SecurityConfig {
     //            .roles("USER")
     //           .build();
     //    return new InMemoryUserDetailsManager(admin, user);
-        return new JpaUserDetailsService();
+        return new JpaUserDetailsService(employeeRepository);
     }
 
 
