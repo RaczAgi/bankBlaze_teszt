@@ -27,7 +27,7 @@ public class AdminController {
 
 
     @GetMapping
-  //  @PreAuthorize("hasAuthority('ADMIN')")
+    // @PreAuthorize("hasAuthority('ADMIN')")
     public String getAdmin(){
         return "admin";
     }
