@@ -29,7 +29,7 @@ import javax.naming.AuthenticationException;
 
 @Controller
 @AllArgsConstructor
-public abstract class PageController implements AuthenticationManager {
+public class PageController{
 
 private UserDetailsService userDetailsService;
 
@@ -46,11 +46,8 @@ private UserDetailsService userDetailsService;
     }
 
     @PostMapping("/login")
-    public String processLogin(Authentication authentication, @RequestParam String username, @RequestParam String password) {
-        if (authentication != null && authentication.isAuthenticated()) {
-            // Felhasználó már be van jelentkezve
-            return "redirect:/admin";
-        } else {
+    public String processLogin(@RequestParam String username, @RequestParam String password) {
+
             // Felhasználói adatok ellenőrzése és bejelentkeztetés
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);// lekérni a JpaUserDetailsService-ből a felhasználó adatait a username alapján
             if (userDetails != null && userDetails.getPassword().equals(password)) {
@@ -60,4 +57,5 @@ private UserDetailsService userDetailsService;
             }
         }
     }
-}
+
+

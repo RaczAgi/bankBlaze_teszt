@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Component
-
+@Service
 public class JpaUserDetailsService implements UserDetailsService {
 
     private final EmployeeRepository employeeRepository;

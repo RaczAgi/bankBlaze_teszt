@@ -42,7 +42,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-@EnableMethodSecurity(prePostEnabled = true)
+//@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Autowired
     private final JpaUserDetailsService jpaUserDetailsService;
@@ -67,18 +67,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf->csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home", "/queue/**","/corporate/**","/retail/**","/tellers/**", "/premium").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/", "/home", "/queue/**","/corporate/**","/retail/**","/tellers/**", "/premium").permitAll()
+                                .anyRequest().authenticated()
+
+                )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/admin")
-                        .permitAll())
-                //.logout((logout) -> logout.permitAll())
-               // .userDetailsService(jpaUserDetailsService)
-              //  .headers(headers->headers.frameOptions().sameOrigin())
-              //  .httpBasic(Costumizer.withDefaults())
+                        .permitAll()
+                )
                 .build();
 
 
