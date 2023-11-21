@@ -9,10 +9,9 @@
 <h1>Kérjük adja meg a nevét!</h1>
 <form th:action="@{/queue/queueNumber}" method="post">
     <label>
-        <input th:field="*{newQueueNumber.name}" placeholder="Ide írja be, hogy szólíhatjuk..." type="text" id="name">
+        <input placeholder="Ide írja be, hogy szólíhatjuk..." type="text" name="name">
     </label>
     <button type="submit">Tovább</button>
 </form>
-
 </body>
 </html>

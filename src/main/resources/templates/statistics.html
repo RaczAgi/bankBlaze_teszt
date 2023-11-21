@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+</head>
+<body>
+<header>
+  <h1 th:text="${admins.get(0).getName()}"></h1>
+</header>
+<h2>Fiókvezető</h2>
+
+<form th:action="@{/admin}" method="get">
+  <button type="submit">Jogosultságok</button>
+</form>
+<form th:action="@{/admin/statistics}" method="get">
+  <button type="submit">Fiók áttekintő</button>
+</form>
+<form th:action="@{/admin/desk}" method="get">
+  <button type="submit">Pult kiosztás</button>
+</form>
+<form th:action="@{/admin/registration}" method="get">
+  <button type="submit">Új ügyintéző felvétele</button>
+</form>
+<form th:action="@{/admin/delete}" method="get">
+  <button type="submit">Ügyintéző törlése</button>
+</form>
+
+<h3>Fiók áttekintő</h3>
+
+<table>
+  <thead>
+  <tr>
+    <th>Szolgáltatás</th>
+    <th>Várakozók</th>
+    <th>Várakozási idő</th>
+    <th>Kiszolgálás alatt</th>
+    <th>Összesen</th>
+  </tr>
+
+  </thead>
+  <tbody>
+  <tr>
+    <td>Lakosság</td>
+    <td th:text="${lakossagCount}"></td>
+    <!--Várakozási idő-->
+    <!--Kiszolgálás alatt-->
+    <!--Összesen-->
+  </tr>
+  <tr>
+    <td>Vállalat</td>
+    <td th:text="${vallalatCount}"></td>
+    <!--Várakozási idő-->
+    <!--Kiszolgálás alatt-->
+    <!--Összesen-->
+  </tr>
+  <tr>
+    <td>Pénztár</td>
+    <td th:text="${penztarCount}"></td>
+    <!--Várakozási idő-->
+    <!--Kiszolgálás alatt-->
+    <!--Összesen-->
+  </tr>
+  <tr>
+    <td>Premium</td>
+    <td th:text="${premiumCount}"></td>
+    <!--Várakozási idő-->
+    <!--Kiszolgálás alatt-->
+    <!--Összesen-->
+  </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>

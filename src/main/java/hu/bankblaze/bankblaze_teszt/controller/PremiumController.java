@@ -24,16 +24,13 @@ public class PremiumController {
     @GetMapping
     public String getPremium (Model model) {
         model.addAttribute("header", "Prémium");
-        model.addAttribute("newQueueNumber", new QueueNumber());
+        queueNumberService.modifyToPremium(true);
+        queueNumberService.modifyNumber(premiumService.generateQueueNumber());
         return "queueNumber";
     }
-    @PostMapping("/processPremium")
-    public String processPremium(@ModelAttribute("Prémium") Premium premium, Model model, @ModelAttribute("newQueueNumber") QueueNumber newQueueNumber) {
-        model.addAttribute("header", "Prémium");
-        queueNumberService.generateQueueNumber(newQueueNumber);
-        return "redirect:/queue/queueNumber";
-    }
-
 
 }
+
+
+
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+</head>
+<body>
+<header>
+  <h1 th:text="${admins.get(0).getName()}"></h1>
+</header>
+<h2>Fiókvezető</h2>
+
+<form th:action="@{/admin}" method="get">
+  <button type="submit">Jogosultságok</button>
+</form>
+<form th:action="@{/admin/statistics}" method="get">
+  <button type="submit">Fiók áttekintő</button>
+</form>
+<form th:action="@{/admin/desk}" method="get">
+  <button type="submit">Pult kiosztás</button>
+</form>
+<form th:action="@{/admin/registration}" method="get">
+  <button type="submit">Új ügyintéző felvétele</button>
+</form>
+<form th:action="@{/admin/delete}" method="get">
+  <button type="submit">Ügyintéző törlése</button>
+</form>
+
+<h3>Ügyintéző törlése</h3>
+
+<form th:action="@{/admin/delete}" method="post">
+  <label for="adminName">Admin neve:</label>
+  <input type="text" id="adminName" name="name" />
+
+  <button type="submit" name="action" value="delete">Törlés</button>
+</form>
+</body>
+</html>

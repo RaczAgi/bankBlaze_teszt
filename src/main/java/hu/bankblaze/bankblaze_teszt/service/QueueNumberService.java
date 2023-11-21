@@ -18,7 +18,6 @@ public class QueueNumberService {
     private QueueNumberRepository queueNumberRepository;
 
 
-
     public void deleteQueueNumberById(Long id) {
         queueNumberRepository.deleteById(id);
     }
@@ -28,7 +27,7 @@ public class QueueNumberService {
     }
 
     public QueueNumber getQueueNumber() {
-        return queueNumberRepository.findFirstByOrderByIdAsc();
+        return queueNumberRepository.findFirstByOrderByIdDesc();
     }
 
     public QueueNumber getQueueNumberById(Long id) {
@@ -39,8 +38,51 @@ public class QueueNumberService {
         return queueNumberRepository.findAll();
     }
 
-    public void generateQueueNumber(QueueNumber newQueueNumber) {
+    public void addQueueNumber(QueueNumber newQueueNumber) {
         queueNumberRepository.save(newQueueNumber);
     }
+
+    public void modifyName(String newName) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setName(newName);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void modifyNumber(int newNumber) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setNumber(newNumber);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void modifyToRetail(Boolean isToRetail) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setToRetail(isToRetail);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void modifyToCorporate(Boolean isToCorporate) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setToCorporate(isToCorporate);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void modifyToTeller(Boolean isToTeller) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setToTeller(isToTeller);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void modifyToPremium(Boolean isToPremium) {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumber.setToPremium(isToPremium);
+        queueNumberRepository.save(queueNumber);
+    }
+
+    public void deleteQueueNumber() {
+        QueueNumber queueNumber = getQueueNumber();
+        queueNumberRepository.deleteById(queueNumber.getId());
+    }
 }
+
+
 

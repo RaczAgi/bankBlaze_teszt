@@ -1,10 +1,7 @@
 package hu.bankblaze.bankblaze_teszt.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,7 @@ public class Employee {
     private Long id;
     private String name;
     private String email;
-    private String password;
     private String role;
+    private String password;
 
 }

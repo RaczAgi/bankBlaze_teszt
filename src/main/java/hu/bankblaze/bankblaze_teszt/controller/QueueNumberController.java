@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("/queue")
@@ -22,15 +21,23 @@ public class QueueNumberController {
         return "showNumber";
     }
 
+    @PostMapping("/showNumber")
+    public String confirmQueueNumber(@RequestParam("action") String action) {
+        if (action.equals("delete")) {
+            queueNumberService.deleteQueueNumber();
+        }
+        return "redirect:/home";
+    }
+
+
     @GetMapping("/queueNumber")
-    public String queueQueueNumberPage(Model model) {
-        model.addAttribute("newQueueNumber", new QueueNumber());
+    public String queueQueueNumberPage() {
         return "queueNumber";
     }
 
     @PostMapping("/queueNumber")
-    public String generateQueueNumber(@ModelAttribute("newQueueNumber") QueueNumber newQueueNumber) {
-        queueNumberService.generateQueueNumber(newQueueNumber);
+    public String generateQueueNumber(@RequestParam String name) {
+        queueNumberService.modifyName(name);
         return "redirect:/queue/showNumber";
     }
 

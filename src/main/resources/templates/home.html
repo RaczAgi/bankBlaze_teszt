@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Kezdőlap</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
 <h1>Üdvözöljük Bankunkban!</h1>
 <h2>Kérjük válasszon szolgáltatást</h2>
@@ -11,34 +14,33 @@
 <table>
     <tr>
         <th>
-            <a th:href="@{/retail}">
-                <p>Lakossági Szolgáltatások</p>
-            </a>
+            <form th:action="@{/home}" method="post">
+                <button type="submit" name="whereTo" value="1">Lakossági szolgáltatások</button>
+            </form>
         </th>
     </tr>
     <tr>
         <th>
-            <a th:href="@{/corporate}">
-                <p>Vállalati Szolgáltatások<p/>
-            </a>
+            <form th:action="@{/home}" method="post">
+                <button type="submit" name="whereTo" value="2">Vállalati szolgáltatások</button>
+            </form>
         </th>
     </tr>
     <tr>
         <th>
-            <a th:href="@{/tellers}">
-                <p>Pénztár</p>
-            </a>
+            <form th:action="@{/home}" method="post">
+                <button type="submit" name="whereTo" value="3">Pénztár</button>
+            </form>
         </th>
     </tr>
     <tr>
         <th>
-            <a th:href="@{/premium}">
-                <p>Prémium</p>
-            </a>
+            <form th:action="@{/home}" method="post">
+                <button type="submit" name="whereTo" value="4">Prémium</button>
+            </form>
         </th>
     </tr>
 </table>
-
-
 </body>
+
 </html>

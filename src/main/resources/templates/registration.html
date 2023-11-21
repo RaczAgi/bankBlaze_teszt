@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+</head>
+<body>
+<header>
+  <h1 th:text="${admins.get(0).getName()}"></h1>
+</header>
+<h2>Fiókvezető</h2>
+
+<form th:action="@{/admin}" method="get">
+  <button type="submit">Jogosultságok</button>
+</form>
+<form th:action="@{/admin/statistics}" method="get">
+  <button type="submit">Fiók áttekintő</button>
+</form>
+<form th:action="@{/admin/desk}" method="get">
+  <button type="submit">Pult kiosztás</button>
+</form>
+<form th:action="@{/admin/registration}" method="get">
+  <button type="submit">Új ügyintéző felvétele</button>
+</form>
+<form th:action="@{/admin/delete}" method="get">
+  <button type="submit">Ügyintéző törlése</button>
+</form>
+
+<h3>Új ügyintéző felvétele</h3>
+
+<form method="post" th:action="@{/admin/registration}">
+
+  <label for="email">Email:</label>
+  <input th:field="*{newEmployee.email}" type="email" id="email" name="email" required>
+  <br>
+
+  <label for="name">Name:</label>
+  <input th:field="*{newEmployee.name}" type="text" id="name" name="name" required>
+  <br>
+
+  <label for="password">Password:</label>
+  <input th:field="*{newEmployee.password}" type="password" id="password" name="password" required>
+  <br>
+
+  <label for="confirmPassword">Confirm Password:</label>
+  <input type="password" id="confirmPassword" name="confirmPassword" required>
+  <br>
+  <input type="hidden" id="defaultRole" name="defaultRole" value="USER">
+
+  <input type="submit" value="Register">
+</form>
+</body>
+</html>

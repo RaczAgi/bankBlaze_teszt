@@ -1,49 +1,63 @@
 package hu.bankblaze.bankblaze_teszt.controller;
-
-import hu.bankblaze.bankblaze_teszt.config.SecurityConfig;
-import hu.bankblaze.bankblaze_teszt.model.Employee;
-import hu.bankblaze.bankblaze_teszt.model.SecurityUser;
-import hu.bankblaze.bankblaze_teszt.repo.EmployeeRepository;
+import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
 import hu.bankblaze.bankblaze_teszt.service.AdminService;
+import hu.bankblaze.bankblaze_teszt.service.QueueNumberService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.naming.AuthenticationException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Controller
 @AllArgsConstructor
 public class PageController {
 
-
     @Autowired
-    private UserDetailsService userDetailsService;
-
     private AuthenticationManager authenticationManager;
 
-
+    private AdminService adminService;
+    private QueueNumberService queueNumberService;
 
     @GetMapping("/home")
-    public String goHome() {
+    public String goHome (Model model) {
+        model.addAttribute("newQueueNumber", new QueueNumber());
+        return "home";
+    }
+
+    @PostMapping("/home")
+    public String goHome(@ModelAttribute("newQueueNumber") QueueNumber queueNumber,
+                         @RequestParam("whereTo") int id) {
+        queueNumberService.addQueueNumber(queueNumber);
+        switch (id) {
+            case 1 -> {
+                return "redirect:/retail";
+            }
+            case 2 -> {
+                return "redirect:/corporate";
+            }
+            case 3 -> {
+                return "redirect:/teller";
+            }
+            case 4 -> {
+                queueNumberService.addQueueNumber(queueNumber);
+                return "redirect:/premium";
+            }
+        }
         return "home";
     }
 
@@ -54,21 +68,36 @@ public class PageController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@RequestParam("username") String username,
-                               @RequestParam("password") String password,
-                               HttpSession session) {
-        try {
-            // Felhasználó hitelesítése az AuthenticationManager segítségével
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
+    @ResponseBody
+    public RedirectView checkLogin(HttpServletRequest request, @RequestParam("username") String userName,
+                                   @RequestParam String password, RedirectAttributes redirectAttributes) {
+        if (adminService.isAdmin(userName, password)) {
+            List<GrantedAuthority> adminAuthorities = AuthorityUtils.createAuthorityList("ADMIN");
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userName, password, adminAuthorities);
 
-            // Sikeres hitelesítés esetén irányítás az admin oldalra
-            return "redirect:/admin";
-        } catch (Exception e) {
-            return "redirect:/login?error=true"; // Sikertelen bejelentkezés esetén hibaüzenet és visszairányítás a bejelentkezési oldalra
+            if (SecurityContextHolder.getContext().getAuthentication() == null ||
+                    SecurityContextHolder.getContext().getAuthentication().getClass().equals(AnonymousAuthenticationToken.class)) {
+                SecurityContextHolder.getContext().setAuthentication(token);
+            }
+            redirectAttributes.addFlashAttribute("message", "Admin Login Successful");
+            return new RedirectView("redirect:/admin");
+
+        } else if (adminService.isUser(userName, password)) {
+                // Ügyintéző jogosultság hozzáadása
+                List<GrantedAuthority> clerkAuthorities = AuthorityUtils.createAuthorityList("USER");
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userName, password, clerkAuthorities);
+
+            if (SecurityContextHolder.getContext().getAuthentication() == null ||
+                    SecurityContextHolder.getContext().getAuthentication().getClass().equals(AnonymousAuthenticationToken.class)) {
+                SecurityContextHolder.getContext().setAuthentication(token);
+            }
+
+                redirectAttributes.addFlashAttribute("message", "Employee Login Successful");
+                return new RedirectView("redirect:/employee");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Invalid Username or Password");
+            return new RedirectView("login");
         }
     }
+
 }
-
-

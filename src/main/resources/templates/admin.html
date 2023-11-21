@@ -6,20 +6,55 @@
 </head>
 <body>
 <header>
-    <a href="#Admin kezelofelulet">Admin Kezelőfelület</a>
-    <h1 th:text="${admin}"></h1>
-
+    <h1 th:text="${admins.get(0).getName()}"></h1>
 </header>
 <h2>Fiókvezető</h2>
-<label for="fiok">Fiók:</label>
-<select id="fiok" name="fiok">
-    <option value="szekhaz">Székház</option>
-    <option value="arkad">Árkád</option>
-    <option value="westend">Westend</option>
-</select>
 
+<form th:action="@{/admin}" method="get">
+    <button type="submit">Jogosultságok</button>
+</form>
+<form th:action="@{/admin/statistics}" method="get">
+    <button type="submit">Fiók áttekintő</button>
+</form>
+<form th:action="@{/admin/desk}" method="get">
+    <button type="submit">Pult kiosztás</button>
+</form>
+<form th:action="@{/admin/registration}" method="get">
+    <button type="submit">Új ügyintéző felvétele</button>
+</form>
+<form th:action="@{/admin/delete}" method="get">
+    <button type="submit">Ügyintéző törlése</button>
+</form>
 
-<h3>Fióki áttekintő</h3>
+<h3>Jogosultságok</h3>
 
+<form th:action="@{/admin/update}" method="post">
+    <table>
+        <thead>
+        <tr>
+            <th>Jogosultsagok</th>
+            <th th:each="current : ${employees}" th:text="${current.name}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Lakosság</td>
+            <td th:each="current : ${employees}">
+                <input type="checkbox" name="permissions[${current.id}].forRetail" value="true" />
+                <input type="hidden" name="permissions[${current.id}].employee.id" th:value="${current.id}" />
+            </td>
+        </tr>
+        <tr>
+            <td>Vállalat</td>
+            <td th:each="current : ${employees}">
+                <input type="checkbox" name="permissions[${current.id}].forCorporate" value="true"/>
+                <input type="hidden" name="permissions[${current.id}].employee.id" th:value="${current.id}"/>
+            </td>
+        </tr>
+        <!-- További jogosultságokhoz hasonló sorok -->
+        </tbody>
+    </table>
+    <button type="submit">Mentés</button>
+</form>
 </body>
 </html>

@@ -5,8 +5,18 @@
 </head>
 <body>
 <h1>Generált sorszám</h1>
-<div th:if="${generatedNumber != null}">
-    <h3>Üdvözöljük <span th:text="${customerName}"></span>, az ön Sorszáma: <span th:text="${generatedNumber}"></span></h3>
+<div th:if="${queueNumber != null}">
+    <h3>
+        Üdvözöljük <span th:text="${queueNumber.name}"></span>
+        , az ön Sorszáma: <span th:text="${queueNumber.number}"></span>
+    </h3>
+</div>
+<div>
+    <form th:action="@{/queue/showNumber}" method="post">
+        <h1>Rögzíti?</h1>
+        <button type="submit" name="action" value="confirm">Igen</button>
+        <button type="submit" name="action" value="delete">Nem</button>
+    </form>
 </div>
 </body>
 </html>
