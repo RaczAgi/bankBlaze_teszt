@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Get the next client</title>
+</head>
+<body>
+<header>
+    <h2>  <span th:text="${loggedInUsername}"></span></h2>
+    <h2>  A pult száma: <span th:text="${deskNumber}"></span></h2>
+    <h2>  A következő <span th:text="${permission}"></span>i ügyfél:
+                        <span th:text="${nextQueueNumber.getName}"></span></h2>
+</header>
+<h2>Várakozó ügyfelek</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Lakosság</th>
+        <th>Vállalat</th>
+        <th>Pénztár</th>
+        <th>Premium</th>
+    </tr>
+    </thead>
+    <tr>
+        <td th:text="${lakossagCount}"></td>
+        <td th:text="${vallalatCount}"></td>
+        <td th:text="${penztarCount}"></td>
+        <td th:text="${premiumCount}"></td>
+    </tr>
+</table>
+<h2>  <span th:text="${permission}"></span></h2>
+<table>
+    <thead>
+    <tr>
+        <th>Várakozók</th>
+        <th>Csapat létszám</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${actualCount}"></td>
+        <td th:text="${letszamCount}"></td>
+    </tbody>
+</table>
+
+<form th:action="@{/employee/closure}" method="get">
+    <button type="submit"> Lezárás</button>
+</form>
+<form th:action="@{/employee/redirect}" method="get">
+    <label for="redirectLocation">Sorszám átirányítása:</label>
+    <select id="redirectLocation" name="redirectLocation" required>
+        <option value="lakossag">Lakossági</option>
+        <option value="vallalat">Vállalati</option>
+        <option value="penztar">Pénztári</option>
+        <option value="premium">Prémium</option>
+    </select>
+    <button type="submit">Átirányítás</button>
+</form>
+<form th:action="@{/employee/deleteNumber}" method="get">
+    <button type="submit"> Törlés</button>
+</form>
+
+</body>
+</html>

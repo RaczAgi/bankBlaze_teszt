@@ -3,6 +3,7 @@ import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
 import hu.bankblaze.bankblaze_teszt.service.AdminService;
 import hu.bankblaze.bankblaze_teszt.service.QueueNumberService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -99,5 +101,27 @@ public class PageController {
             return new RedirectView("login");
         }
     }
+    @GetMapping("/logout")
+    public String showLogoutPage(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        return "home"; // Ez a view neve, amely megjeleníti a kijelentkezési oldalt (pl. logout.html)
+    }
+    /*
+    @PostMapping("/logout")
+    public String processLogout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        // Ide lehet hozzáadni további műveleteket a kijelentkezés utáni viselkedéshez
+        return "redirect:/login"; // Visszairányítás a bejelentkező oldalra
+    }
+
+     */
+
 
 }

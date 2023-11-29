@@ -16,6 +16,7 @@ public class QueueNumberService {
 
     @Autowired
     private QueueNumberRepository queueNumberRepository;
+    private PermissionService permissionService;
 
 
     public void deleteQueueNumberById(Long id) {
@@ -82,6 +83,12 @@ public class QueueNumberService {
         QueueNumber queueNumber = getQueueNumber();
         queueNumberRepository.deleteById(queueNumber.getId());
     }
+    public void deleteQueueNumberByNumber(int numberToDelete) {
+        queueNumberRepository.deleteByNumber(numberToDelete);
+    }
+
+
+
 }
 
 

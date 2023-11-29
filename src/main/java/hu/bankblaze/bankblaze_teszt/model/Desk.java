@@ -23,4 +23,19 @@ public class Desk {
     public Long getId() {
         return id;
     }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setQueueNumber(QueueNumber nextQueueNumber) {
+
+    }
+
+    public void setQueueNumber(int number) {
+
+    }
+
+    public void add(int number) {
+    }
 }

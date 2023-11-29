@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -31,25 +32,23 @@ public class AdminController {
     public String getAllClerks(Model model) {
         model.addAttribute("employees", adminService.getAllClerks());
         model.addAttribute("admins", adminService.getAllAdmins());
+        model.addAttribute("permissions", permissionService.getAllPermissions());
         return "admin";
     }
 
     @PostMapping("/update")
-    public String getPermission(@ModelAttribute("permissions") List<Permission> permissions) {
-        for (Permission permission : permissions) {
-            // Itt lehet a megfelelő adatbázis műveleteket végezni az adatok frissítésére
-            // Példa: permissionService.save(permission);
-        }
+    public String updatePermissions(@RequestParam Map<String, String> permissions) {
+        permissionService.updatePermissions(permissions);
         return "redirect:/admin";
     }
 
     @GetMapping("/statistics")
     public String getStatistics(Model model) {
         model.addAttribute("admins", adminService.getAllAdmins());
-        model.addAttribute("lakossagCount", queueNumberRepository.countByNumberBetween(1000, 1999));
-        model.addAttribute("vallalatCount", queueNumberRepository.countByNumberBetween(2000, 2999));
-        model.addAttribute("penztarCount", queueNumberRepository.countByNumberBetween(3000, 3999));
-        model.addAttribute("premiumCount", queueNumberRepository.countByNumberBetween(9000, 9999));
+        model.addAttribute("lakossagCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(1000, 1999));
+        model.addAttribute("vallalatCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(2000, 2999));
+        model.addAttribute("penztarCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(3000, 3999));
+        model.addAttribute("premiumCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(9000, 9999));
         // model.addAttribute(("lakossaginProgress"), lekérni az összes pultot ahol lakossági ügyintézés van)
         // model.addAttribute(("vallalatProgress"), lekérni az összes pultot ahol vállalati ügyintézés van)
         // model.addAttribute(("penztarinProgress"), lekérni az összes pultot ahol pénztári ügyintézés van)
@@ -91,6 +90,7 @@ public class AdminController {
     @GetMapping("/delete")
     public String showDeleteForm(Model model) {
         model.addAttribute("admins", adminService.getAllAdmins());
+        model.addAttribute("admins", adminService.getAllClerks());
         return "delete";
     }
     @PostMapping("/delete")
@@ -100,6 +100,7 @@ public class AdminController {
         }
         return "redirect:/admin";
     }
+
 
     @PostMapping("update/{id}")
     public String updatePermission(@PathVariable("id") Integer id, @ModelAttribute("permission") Permission update) {

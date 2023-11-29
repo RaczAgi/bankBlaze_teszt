@@ -7,6 +7,7 @@
 <body>
 <header>
     <h1 th:text="${admins.get(0).getName()}"></h1>
+    <a th:href="@{/logout}">Logout</a>
 </header>
 <h2>Fiókvezető</h2>
 
@@ -27,31 +28,41 @@
 </form>
 
 <h3>Jogosultságok</h3>
-
 <form th:action="@{/admin/update}" method="post">
     <table>
         <thead>
         <tr>
-            <th>Jogosultsagok</th>
-            <th th:each="current : ${employees}" th:text="${current.name}"></th>
+            <th>Felhasználók</th>
+            <th>Lakosság</th>
+            <th>Vállalat</th>
+            <th>Pénztár</th>
+            <th>Premium</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Lakosság</td>
-            <td th:each="current : ${employees}">
-                <input type="checkbox" name="permissions[${current.id}].forRetail" value="true" />
-                <input type="hidden" name="permissions[${current.id}].employee.id" th:value="${current.id}" />
+        <tr th:each="current, iterStat: ${permissions}">
+            <td th:text="${current.employee.getName()}"></td>
+            <td>
+                <input type="checkbox" th:checked="${current.forRetail}" th:name="'forRetail-'+ ${current.id}"
+                       th:value="true">
+                <input type="hidden" th:name="'forRetail-'+ ${current.id}" th:value="false">
+            </td>
+            <td>
+                <input type="checkbox" th:checked="${current.forCorporate}" th:name="'forCorporate-'+ ${current.id}"
+                       th:value="true">
+                <input type="hidden" th:name="'forCorporate-'+ ${current.id}" th:value="false">
+            </td>
+            <td>
+                <input type="checkbox" th:checked="${current.forTeller}" th:name="'forTeller-'+ ${current.id}"
+                       th:value="true">
+                <input type="hidden" th:name="'forTeller-'+ ${current.id}" th:value="false">
+            </td>
+            <td>
+                <input type="checkbox" th:checked="${current.forPremium}" th:name="'forPremium-'+ ${current.id}"
+                       th:value="true">
+                <input type="hidden" th:name="'forPremium-'+ ${current.id}" th:value="false">
             </td>
         </tr>
-        <tr>
-            <td>Vállalat</td>
-            <td th:each="current : ${employees}">
-                <input type="checkbox" name="permissions[${current.id}].forCorporate" value="true"/>
-                <input type="hidden" name="permissions[${current.id}].employee.id" th:value="${current.id}"/>
-            </td>
-        </tr>
-        <!-- További jogosultságokhoz hasonló sorok -->
         </tbody>
     </table>
     <button type="submit">Mentés</button>

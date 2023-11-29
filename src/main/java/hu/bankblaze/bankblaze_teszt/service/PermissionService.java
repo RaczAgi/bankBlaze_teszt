@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +23,10 @@ public class PermissionService {
 
     public void savePermisson (Permission permission){
         permissionRepository.save(permission);
+    }
+
+    public List<Permission> getAllPermissions(){
+        return permissionRepository.findAll();
     }
 
     private Permission getPermissionById(Long id) {
@@ -50,6 +57,35 @@ public class PermissionService {
         permissionRepository.save(permission);
     }
 
+    public void updatePermissions(Map<String, String> formData) {
+        formData.forEach((key, value) -> {
+            if (key.startsWith("for")) {
+                String[] parts = key.split("-");
+                if (parts.length == 2) {
+                    Long id = Long.parseLong(parts[1]);
+                    Boolean checked = "true".equals(value);
+                    switch (parts[0]) {
+                        case "forRetail":
+                            modifyForRetail(id, checked);
+                            break;
+                        case "forCorporate":
+                            modifyForCorporate(id, checked);
+                            break;
+                        case "forTeller":
+                            modifyForTellers(id, checked);
+                            break;
+                        case "forPremium":
+                            modifyForPremium(id, checked);
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
 
     public String getPermissionByLoggedInUser(Long loggedInUserId) {
         Permission permission = permissionRepository.findByEmployeeId(loggedInUserId);
@@ -68,6 +104,11 @@ public class PermissionService {
         } else {
             return "Nincs ilyen azonosítójú felhasználó";
         }
+
 }
 
+
+    public Permission getPermissions(Long loggedInUserId) {
+        return permissionRepository.findByEmployeeId(loggedInUserId);
+    }
 }

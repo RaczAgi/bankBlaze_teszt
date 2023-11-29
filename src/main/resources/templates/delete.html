@@ -28,10 +28,14 @@
 
 <h3>Ügyintéző törlése</h3>
 
-<form th:action="@{/admin/delete}" method="post">
-  <label for="adminName">Admin neve:</label>
-  <input type="text" id="adminName" name="name" />
-
+<form action="/admin/delete" method="post">
+  <label for="employeeName">Kérem válassza ki az ügyintézőt:</label>
+  <select type="text" id="employeeName" name="name">
+    <option th:each="employee : ${employees}"
+            th:value="${employee.getName()}"
+            th:text="${employee.getName()}">
+    </option>
+  </select>
   <button type="submit" name="action" value="delete">Törlés</button>
 </form>
 </body>

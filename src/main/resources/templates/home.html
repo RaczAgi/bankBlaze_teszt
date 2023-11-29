@@ -8,14 +8,17 @@
 </head>
 
 <body>
+<div class="container">
 <h1>Üdvözöljük Bankunkban!</h1>
-<h2>Kérjük válasszon szolgáltatást</h2>
+
 <h3><a th:href="@{/login}">Admin sign in</a></h3>
+    <div id="buttons">
+        <h2>Kérjük válasszon szolgáltatást</h2>
 <table>
     <tr>
         <th>
             <form th:action="@{/home}" method="post">
-                <button type="submit" name="whereTo" value="1">Lakossági szolgáltatások</button>
+                <button class="btn" style="--clr:rgb(7, 197, 245);" type="submit" name="whereTo" value="1">Lakossági szolgáltatások</button>
             </form>
         </th>
     </tr>

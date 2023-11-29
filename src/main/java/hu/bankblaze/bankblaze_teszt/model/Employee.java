@@ -21,4 +21,10 @@ public class Employee {
     private String role;
     private String password;
 
+    public void setDesk(Desk desk) {
+    }
+
+    public void setQueueNumber(QueueNumber queueNumber) {
+
+    }
 }
