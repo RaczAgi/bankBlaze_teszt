@@ -6,8 +6,8 @@
 </head>
 <body>
 <header>
-    <h2>  <span th:text="${loggedInUsername}"></span></h2>
-    <h2>  A pult száma: <span th:text="${deskNumber}"></span></h2>
+    <h2>  <span th:text="${desk.getEmployee().getName()}"></span></h2>
+    <h2>  A pult száma: <span th:text="${desk.getId()}"></span></h2>
 </header>
 <h2>Várakozó ügyfelek</h2>
 <table>
@@ -20,13 +20,13 @@
     </tr>
     </thead>
 <tr>
-    <td th:text="${lakossagCount}"></td>
-    <td th:text="${vallalatCount}"></td>
-    <td th:text="${penztarCount}"></td>
+    <td th:text="${retailCount}"></td>
+    <td th:text="${corporateCount}"></td>
+    <td th:text="${tellerCount}"></td>
     <td th:text="${premiumCount}"></td>
 </tr>
 </table>
-<h2>  <span th:text="${permission}"></span></h2>
+<h2>  <span th:text="${actualPermission}"> </span></h2>
 <table>
     <thead>
     <tr>
@@ -37,10 +37,10 @@
     <tbody>
     <tr>
         <td th:text="${actualCount}"></td>
-        <td th:text="${letszamCount}"></td>
+        <td th:text="${employeeCount}"></td>
     </tbody>
 </table>
-<form th:action="@{/desk/next}" method="get">
+<form th:action="@{/employee}" method="post">
     <button type="submit"> Következő ügyfél</button>
 </form>
 

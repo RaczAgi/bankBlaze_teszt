@@ -1,6 +1,7 @@
 package hu.bankblaze.bankblaze_teszt.service;
 
 
+import hu.bankblaze.bankblaze_teszt.model.Employee;
 import hu.bankblaze.bankblaze_teszt.model.Permission;
 import hu.bankblaze.bankblaze_teszt.repo.PermissionRepository;
 import lombok.AllArgsConstructor;
@@ -86,7 +87,9 @@ public class PermissionService {
         });
     }
 
-
+public Permission getPermissionByEmployee(Employee employee){
+       return permissionRepository.findByEmployeeId(employee.getId());
+}
     public String getPermissionByLoggedInUser(Long loggedInUserId) {
         Permission permission = permissionRepository.findByEmployeeId(loggedInUserId);
         if (permission != null) {
@@ -111,4 +114,5 @@ public class PermissionService {
     public Permission getPermissions(Long loggedInUserId) {
         return permissionRepository.findByEmployeeId(loggedInUserId);
     }
+
 }

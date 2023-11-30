@@ -1,5 +1,5 @@
 package hu.bankblaze.bankblaze_teszt.service;
-
+import hu.bankblaze.bankblaze_teszt.model.Desk;
 import hu.bankblaze.bankblaze_teszt.model.Employee;
 import hu.bankblaze.bankblaze_teszt.model.Permission;
 import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
@@ -47,8 +47,6 @@ public class AdminService {
         employeeRepository.save(employee);
     }
 
-
-
     public boolean checkLogin(String userName, String password) {
         // TODO Auto-generated method stub
         Optional<Employee> employee = employeeRepository.findByName(userName);
@@ -83,28 +81,21 @@ public class AdminService {
         }
     }
 
-    public Employee getAdminByName(String name) {
+    public Employee getEmployeeByName(String name) {
         return employeeRepository.findByName(name).orElse(null);
     }
+
+
     public Long getLoggedInUserIdByUsername(String loggedInUsername) {
         Optional<Employee> employeeOptional = employeeRepository.findByName(loggedInUsername);
         return employeeOptional.map(Employee::getId).orElse(null);
     }
 
-    public String getLoggedInClerks(Model model) {
+    public String getLoggedInClerks() {
         String loggedInUsername = getLoggedInUsername();
-        model.addAttribute("loggedInUsername", loggedInUsername);
-
         Long loggedInUserId = getLoggedInUserIdByUsername(loggedInUsername);
         Long deskNumber = deskService.getDeskIdByLoggedInUser(loggedInUserId);
-        model.addAttribute("deskNumber", deskNumber);
-
-        setQueueCounts(model);
-        setActualCount(model);
-        setEmployeeCount(model);
-
         String permission = permissionService.getPermissionByLoggedInUser(loggedInUserId);
-        model.addAttribute("permission", permission);
 
         return "employee";
     }
@@ -115,42 +106,41 @@ public class AdminService {
     }
 
     public void setQueueCounts(Model model) {
-        model.addAttribute("lakossagCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(1000, 1999));
-        model.addAttribute("vallalatCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(2000, 2999));
-        model.addAttribute("penztarCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(3000, 3999));
-        model.addAttribute("premiumCount", queueNumberRepository.countByNumberBetweenAndActiveIsTrue(9000, 9999));
+        model.addAttribute("retailCount", queueNumberRepository.countByActiveTrueAndToRetailTrue());
+        model.addAttribute("corporateCount", queueNumberRepository.countByActiveTrueAndToCorporateTrue());;
+        model.addAttribute("tellerCount", queueNumberRepository.countByActiveTrueAndToTellerTrue());;
+        model.addAttribute("privateCount", queueNumberRepository.countByActiveTrueAndToPremiumTrue());
     }
 
-    public void setActualCount(Model model) {
-        String permission = (String) model.getAttribute("permission");
-
+    public void setActualCount(Model model, Employee employee) {
+        Permission permission = permissionService.getPermissionByEmployee(employee);
         Integer actualCount = 0;
-        if ("Lakosság".equals(permission)) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(1000, 1999);
-        } else if ("Vállalat".equals(permission)) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(2000, 2999);
-        } else if ("Pénztár".equals(permission)) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(3000, 3999);
-        } else if ("Prémium".equals(permission)) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(9000, 9999);
+        if (permission.getForRetail()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToRetailTrue();
+        } else if (permission.getForCorporate()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToCorporateTrue();
+        } else if (permission.getForTeller()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToTellerTrue();
+        } else if (permission.getForPremium()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToPremiumTrue();
         }
         model.addAttribute("actualCount", actualCount);
     }
 
-    public void setEmployeeCount(Model model) {
-        String permission = (String) model.getAttribute("permission");
+    public void setEmployeeCount(Model model, Employee employee) {
+        Permission permission = permissionService.getPermissionByEmployee(employee);
 
-        Integer letszamCount = 0;
-        if ("Lakosság".equals(permission)) {
-            letszamCount = permissionRepository.countByForRetailTrue();
-        } else if ("Vállalat".equals(permission)) {
-            letszamCount = permissionRepository.countByForCorporateTrue();
-        } else if ("Pénztár".equals(permission)) {
-            letszamCount = permissionRepository.countByForTellerTrue();
-        } else if ("Prémium".equals(permission)) {
-            letszamCount = permissionRepository.countByForPremiumTrue();
+        Integer employeeCount = 0;
+        if (permission.getForRetail()) {
+            employeeCount = permissionRepository.countByForRetailTrue();
+        } else if (permission.getForCorporate()) {
+            employeeCount = permissionRepository.countByForCorporateTrue();
+        } else if (permission.getForTeller()) {
+            employeeCount = permissionRepository.countByForTellerTrue();
+        } else if (permission.getForPremium()) {
+            employeeCount = permissionRepository.countByForPremiumTrue();
         }
-        model.addAttribute("letszamCount", letszamCount);
+        model.addAttribute("employeeCount", employeeCount);
     }
     public void processClosure(Model model) {
         String loggedInUsername = getLoggedInUsername();
@@ -208,9 +198,9 @@ public class AdminService {
         prepareModel(model, loggedInUsername, deskNumber, permission, nextQueueNumber);
 
         if (nextQueueNumber != null) {
-            nextQueueNumber.setToRetail("lakossag".equals(redirectLocation));
-            nextQueueNumber.setToCorporate("vallalat".equals(redirectLocation));
-            nextQueueNumber.setToTeller("penztar".equals(redirectLocation));
+            nextQueueNumber.setToRetail("retail".equals(redirectLocation));
+            nextQueueNumber.setToCorporate("corporate".equals(redirectLocation));
+            nextQueueNumber.setToTeller("teller".equals(redirectLocation));
             nextQueueNumber.setToPremium("premium".equals(redirectLocation));
 
             queueNumberRepository.save(nextQueueNumber);
@@ -227,12 +217,16 @@ public class AdminService {
 
         prepareModel(model, loggedInUsername, deskNumber, permission, nextQueueNumber);
 
-
         if (nextQueueNumber != null) {
+            Desk desk = deskService.findDeskByQueueNumber(nextQueueNumber);
+            if (desk != null) {
+                desk.setQueueNumber(null);
+                deskService.saveDesk(desk);
+            }
             queueNumberRepository.delete(nextQueueNumber);
         }
     }
-    public QueueNumber processNextClient(Model model) {
+    public QueueNumber processNextClient(Model model, Employee employee) {
         String loggedInUsername = getLoggedInUsername();
         Long loggedInUserId = getLoggedInUserIdByUsername(loggedInUsername);
         Long deskNumber = deskService.getDeskIdByLoggedInUser(loggedInUserId);
@@ -241,28 +235,26 @@ public class AdminService {
 
         QueueNumber nextQueueNumber = determineNextQueueNumber(permission, permissions);
 
-        prepareModel(model, loggedInUsername, deskNumber, permission, nextQueueNumber);
-
-
-       Integer actualCount = 0;
-        if (permission.equals("Lakosság")) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(1000, 1999);
-        } else if (permission.equals("Vállalat")) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(2000, 2999);
-        } else if (permission.equals("Pénztár")) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(3000, 3999);
-        } else if (permission.equals("Prémium")) {
-            actualCount = queueNumberRepository.countByNumberBetweenAndActiveIsTrue(9000, 9999);
+        Permission actualPermission = permissionService.getPermissionByEmployee(employee);
+        Integer actualCount = 0;
+        if (actualPermission.getForRetail()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToRetailTrue();
+        } else if (actualPermission.getForCorporate()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToCorporateTrue();
+        } else if (actualPermission.getForTeller()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToTellerTrue();
+        } else if (actualPermission.getForPremium()) {
+            actualCount = queueNumberRepository.countByActiveTrueAndToPremiumTrue();
         }
         model.addAttribute("actualCount", actualCount);
         Integer employeeCount = 0;
-        if (permission.equals("Lakosság")) {
+        if (actualPermission.getForRetail()) {
             employeeCount = permissionRepository.countByForRetailTrue();
-        } else if (permission.equals("Vállalat")) {
+        } else if (actualPermission.getForCorporate()) {
             employeeCount = permissionRepository.countByForCorporateTrue();
-        } else if (permission.equals("Pénztár")) {
+        } else if (actualPermission.getForTeller()) {
             employeeCount = permissionRepository.countByForTellerTrue();
-        } else if (permission.equals("Prémium")) {
+        } else if (actualPermission.getForPremium()) {
             employeeCount = permissionRepository.countByForPremiumTrue();
         }
         model.addAttribute("EmployeeCount", employeeCount);
@@ -270,6 +262,20 @@ public class AdminService {
     }
 
 
+    public void setActualPermission(Model model, Employee employee) {
+        Permission permission = permissionService.getPermissionByEmployee(employee);
+        String actualPermission = null;
+        if (permission.getForRetail()) {
+            actualPermission = "Lakosság";
+        } else if (permission.getForCorporate()) {
+             actualPermission = "Vállalat";
+        } else if (permission.getForTeller()) {
+             actualPermission  = "Pénztár";
+        } else if (permission.getForPremium()) {
+             actualPermission = "Prémium";
+        }
+        model.addAttribute("actualPermission", actualPermission);
+    }
 }
 
 

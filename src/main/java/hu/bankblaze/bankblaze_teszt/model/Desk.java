@@ -5,9 +5,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Desk {
@@ -20,22 +22,8 @@ public class Desk {
     @JoinColumn(name = "queue_number_id")
     private QueueNumber queueNumber;
 
-    public Long getId() {
-        return id;
-    }
 
-    public Employee getEmployee() {
-        return employee;
-    }
 
-    public void setQueueNumber(QueueNumber nextQueueNumber) {
 
-    }
 
-    public void setQueueNumber(int number) {
-
-    }
-
-    public void add(int number) {
-    }
 }

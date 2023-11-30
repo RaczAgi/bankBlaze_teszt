@@ -2,6 +2,7 @@ package hu.bankblaze.bankblaze_teszt.service;
 
 import hu.bankblaze.bankblaze_teszt.model.Desk;
 import hu.bankblaze.bankblaze_teszt.model.Employee;
+import hu.bankblaze.bankblaze_teszt.model.Permission;
 import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
 import hu.bankblaze.bankblaze_teszt.repo.DeskRepository;
 import hu.bankblaze.bankblaze_teszt.repo.EmployeeRepository;
@@ -10,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +19,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DeskService {
     private DeskRepository deskRepository;
-    private EmployeeRepository employeeRepository;
-    private QueueNumberRepository queueNumberRepository;
+    private QueueNumberService queueNumberService;
+    private PermissionService permissionService;
 
     private List<Desk> desks;
 
@@ -48,27 +50,40 @@ public class DeskService {
         deskRepository.save(desk);
     }
 
-    public void assignDeskAndQueueNumber(Long employeeId, Long deskId, Long queueNumberId) {
-        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
-        Optional<Desk> deskOptional = deskRepository.findById(deskId);
-        Optional<QueueNumber> queueNumberOptional = queueNumberRepository.findById(queueNumberId);
+    public void nextQueueNumber(Employee employee) {
+        Desk desk = getDeskByEmployeeId(employee.getId());
+        Permission permission = permissionService.getPermissionByEmployee(employee);
+        List<QueueNumber> queueNumberList = new ArrayList<>();
+        if (permission.getForRetail()){
+            queueNumberList.add(queueNumberService.getNextRetail());
+        } else if (permission.getForCorporate()){
+            queueNumberList.add(queueNumberService.getNextCorporate());
+        } else if (permission.getForTeller()){
+            queueNumberList.add(queueNumberService.getNextTeller());
+        } else if (permission.getForPremium()) {
+            queueNumberList.add(queueNumberService.getNextPremium());
+        }
+        QueueNumber queueNumber = queueNumberService.getSmallestNumber(queueNumberList);
+        desk.setQueueNumber(queueNumber);
+        System.out.println(desk.getQueueNumber());
+       deskRepository.save(desk);
+    }
+    public void clearQueueNumberInDeskTable(QueueNumber queueNumber) {
 
-        if (employeeOptional.isPresent() && deskOptional.isPresent() && queueNumberOptional.isPresent()) {
-            Employee employee = employeeOptional.get();
-            Desk desk = deskOptional.get();
-            QueueNumber queueNumber = queueNumberOptional.get();
+        Desk desk = findDeskByQueueNumber(queueNumber);
 
-            employee.setDesk(desk);
-            employee.setQueueNumber(queueNumber);
 
-            desk.setQueueNumber(queueNumber.getNumber());
+        if (desk != null) {
 
-            deskRepository.save(desk);
+            desk.setQueueNumber(null);
 
-        } else {
-            throw new EntityNotFoundException("Nem található entitás valamelyik azonosító alapján.");
-
+            saveDesk(desk);
         }
     }
+
+    protected Desk findDeskByQueueNumber(QueueNumber queueNumber) {
+        return deskRepository.findByQueueNumber(queueNumber);
+    }
+
 
 }

@@ -1,22 +1,19 @@
 package hu.bankblaze.bankblaze_teszt.controller;
 
-import hu.bankblaze.bankblaze_teszt.model.Desk;
+import hu.bankblaze.bankblaze_teszt.model.Employee;
 import hu.bankblaze.bankblaze_teszt.model.Permission;
 import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
-import hu.bankblaze.bankblaze_teszt.repo.PermissionRepository;
-import hu.bankblaze.bankblaze_teszt.repo.QueueNumberRepository;
 import hu.bankblaze.bankblaze_teszt.service.AdminService;
 import hu.bankblaze.bankblaze_teszt.service.DeskService;
 import hu.bankblaze.bankblaze_teszt.service.PermissionService;
 import hu.bankblaze.bankblaze_teszt.service.QueueNumberService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -29,26 +26,29 @@ public class EmployeeController {
 
 
 
+
     @GetMapping
     @PreAuthorize("hasAuthority('USER')")
     public String getEmployeePage(Model model) {
+        Employee employee = adminService.getEmployeeByName(adminService.getLoggedInUsername());
+        model.addAttribute("desk", deskService.getDeskByEmployeeId(employee.getId()));
 
-        adminService.getLoggedInClerks(model);
+        adminService.getLoggedInClerks();
         adminService.getLoggedInUsername();
         adminService.setQueueCounts(model);
-        adminService.setActualCount(model);
-        adminService.setEmployeeCount(model);
-
+        adminService.setActualPermission(model, employee);
+        adminService.setActualCount(model, employee);
+        adminService.setEmployeeCount(model, employee);
 
             return "employee";
     }
 
     @PostMapping
-    public String assignDeskToEmployee(@RequestParam("employeeId") Long employeeId,
-                                       @RequestParam("deskId") Long deskId,
-                                       @RequestParam("queueNumberId") Long queueNumberId) {
-        deskService.assignDeskAndQueueNumber(employeeId, deskId, queueNumberId);
-        return "redirect:/employee";
+    public String nextQueueNumber(Model model) {
+        Employee employee = adminService.getEmployeeByName(adminService.getLoggedInUsername());
+       deskService.nextQueueNumber(employee);
+        adminService.setActualPermission(model, employee);
+        return "redirect:/desk/next";
     }
 
     @GetMapping("/closure")
@@ -59,13 +59,13 @@ public class EmployeeController {
     @GetMapping("/redirect")
     public String getRedirect(Model model, @RequestParam("redirectLocation") String redirectLocation) {
         adminService.processRedirect(model, redirectLocation);
-        return "employee";
+        return "redirect:/employee";
     }
 
     @GetMapping("/deleteNumber")
     public String deleteNumber(Model model){
         adminService.deleteNextQueueNumber(model);
-        return "employee";
+        return "redirect:/employee";
     }
 
 

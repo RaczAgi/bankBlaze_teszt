@@ -1,6 +1,5 @@
 package hu.bankblaze.bankblaze_teszt.repo;
 
-import hu.bankblaze.bankblaze_teszt.model.Permission;
 import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +36,17 @@ public interface QueueNumberRepository extends JpaRepository<QueueNumber, Long> 
 
     Integer countByNumberBetweenAndActiveIsTrue(int i, int i1);
 
+    QueueNumber getFirstByToRetailIsTrueAndActiveIsTrue();
+    QueueNumber getFirstByToCorporateIsTrueAndActiveIsTrue();
+    QueueNumber getFirstByToTellerIsTrueAndActiveIsTrue();
+    QueueNumber getFirstByToPremiumIsTrueAndActiveIsTrue();
+
+
+    Integer countByActiveTrueAndToRetailTrue();
+
+    Integer countByActiveTrueAndToCorporateTrue();
+
+    Integer countByActiveTrueAndToTellerTrue();
+
+    Integer countByActiveTrueAndToPremiumTrue();
 }

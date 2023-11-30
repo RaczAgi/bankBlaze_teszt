@@ -6,10 +6,10 @@
 </head>
 <body>
 <header>
-    <h2>  <span th:text="${loggedInUsername}"></span></h2>
-    <h2>  A pult száma: <span th:text="${deskNumber}"></span></h2>
-    <h2>  A következő <span th:text="${permission}"></span>i ügyfél:
-                        <span th:text="${nextQueueNumber.getName}"></span></h2>
+    <h2>  <span th:text="${desk.getEmployee().getName()}"></span></h2>
+    <h2>  A pult száma: <span th:text="${desk.getId()}"></span></h2>
+    <h2>  A következő <span th:text="${actualPermission}"></span>i ügyfél:
+                        <span th:text="${desk.getQueueNumber().getName()}"></span></h2>
 </header>
 <h2>Várakozó ügyfelek</h2>
 <table>
@@ -22,13 +22,13 @@
     </tr>
     </thead>
     <tr>
-        <td th:text="${lakossagCount}"></td>
-        <td th:text="${vallalatCount}"></td>
-        <td th:text="${penztarCount}"></td>
+        <td th:text="${retailCount}"></td>
+        <td th:text="${corporateCount}"></td>
+        <td th:text="${tellerCount}"></td>
         <td th:text="${premiumCount}"></td>
     </tr>
 </table>
-<h2>  <span th:text="${permission}"></span></h2>
+<h2>  <span th:text="${actualPermission}"></span></h2>
 <table>
     <thead>
     <tr>
@@ -39,7 +39,7 @@
     <tbody>
     <tr>
         <td th:text="${actualCount}"></td>
-        <td th:text="${letszamCount}"></td>
+        <td th:text="${employeeCount}"></td>
     </tbody>
 </table>
 
@@ -49,9 +49,9 @@
 <form th:action="@{/employee/redirect}" method="get">
     <label for="redirectLocation">Sorszám átirányítása:</label>
     <select id="redirectLocation" name="redirectLocation" required>
-        <option value="lakossag">Lakossági</option>
-        <option value="vallalat">Vállalati</option>
-        <option value="penztar">Pénztári</option>
+        <option value="retail">Lakosság</option>
+        <option value="corporate">Vállalat</option>
+        <option value="teller">Pénztár</option>
         <option value="premium">Prémium</option>
     </select>
     <button type="submit">Átirányítás</button>

@@ -1,6 +1,7 @@
 package hu.bankblaze.bankblaze_teszt.repo;
 
 import hu.bankblaze.bankblaze_teszt.model.Desk;
+import hu.bankblaze.bankblaze_teszt.model.QueueNumber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ public interface DeskRepository extends JpaRepository<Desk, Long> {
     List<Desk> findAllWithEmployeeNotNull();
 
 
+    Desk findByQueueNumber(QueueNumber queueNumber);
 
 }
 

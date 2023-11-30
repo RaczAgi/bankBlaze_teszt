@@ -39,19 +39,12 @@ public class DeskController {
 
     @GetMapping("/next")
     public String getNextClient(Model model) {
-        QueueNumber nextQueueNumber = adminService.processNextClient(model);
-        String loggedInUsername = adminService.getLoggedInUsername();
-        adminService.getLoggedInClerks(model);
-
-        Long loggedInUserId = adminService.getLoggedInUserIdByUsername(loggedInUsername);
-        String permission = permissionService.getPermissionByLoggedInUser(loggedInUserId);
-        Desk clerkDesk = deskService.getDeskByEmployeeId(loggedInUserId); // Le kell kérni a Desk-et
-
-        if (clerkDesk != null) {
-            clerkDesk.setQueueNumber(nextQueueNumber.getNumber()); // Beállítjuk a megfelelő QueueNumber azonosítót
-            deskService.saveDesk(clerkDesk); // Desk frissítése a QueueNumber azonosítóval
-        }
-
+        Employee employee = adminService.getEmployeeByName(adminService.getLoggedInUsername());
+        model.addAttribute("desk", deskService.getDeskByEmployeeId(employee.getId()));
+        adminService.setQueueCounts(model);
+        adminService.setActualPermission(model, employee);
+        adminService.setActualCount(model, employee);
+        adminService.setEmployeeCount(model, employee);
         return "next";
     }
 
